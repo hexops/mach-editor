@@ -1,0 +1,10 @@
+.{
+    .name = "mach-editor",
+    .version = "0.3.0",
+    .dependencies = .{
+        .mach = .{
+            .url = "https://pkg.machengine.org/mach/8a57ea059c913ee8f9cd307ba9bd820ec178944b.tar.gz",
+            .hash = "1220704b7688a30e32e62f5cfb8a422b785461d3289b69be941c7151a6c87461dfed",
+        },
+    },
+}
