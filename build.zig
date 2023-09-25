@@ -47,36 +47,3 @@ pub fn build(b: *std.Build) !void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
 }
-
-// pub fn build(b: *std.Build) !void {
-//     const optimize = b.standardOptimizeOption(.{});
-//     const target = b.standardTargetOptions(.{});
-
-//     if (target.getCpuArch() != .wasm32) {
-//         const tests_step = b.step("test", "Run tests");
-//         tests_step.dependOn(&testStep(b, optimize, target).step);
-
-//         try editor.link();
-
-//         const editor_install_step = b.step("editor", "Install editor");
-//         editor_install_step.dependOn(&editor.install.step);
-
-//         const editor_run_step = b.step("run", "Run the editor");
-//         editor_run_step.dependOn(&editor.run.step);
-//     }
-// }
-
-// fn testStep(b: *std.Build, optimize: std.builtin.OptimizeMode, target: std.zig.CrossTarget) *std.build.RunStep {
-//     const main_tests = b.addTest(.{
-//         .name = "mach-tests",
-//         .root_source_file = .{ .path = "src/main.zig" },
-//         .target = target,
-//         .optimize = optimize,
-//     });
-//     var iter = module(b, optimize, target).dependencies.iterator();
-//     while (iter.next()) |e| {
-//         main_tests.addModule(e.key_ptr.*, e.value_ptr.*);
-//     }
-//     b.installArtifact(main_tests);
-//     return b.addRunArtifact(main_tests);
-// }

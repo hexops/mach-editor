@@ -2,7 +2,7 @@
 
 // Check that the user's app matches the required interface.
 comptime {
-    if (!@import("builtin").is_test) @import("core").AppInterface(@import("app"));
+    if (!@import("builtin").is_test) @import("mach-core").AppInterface(@import("app"));
 }
 
 const std = @import("std");
@@ -11,7 +11,7 @@ const builtin = @import("builtin");
 // Forward "app" declarations into our namespace, such that @import("root").foo works as expected.
 pub usingnamespace @import("app");
 const App = @import("app").App;
-const core = @import("core");
+const core = @import("mach-core");
 const gpu = core.gpu;
 
 const Builder = @import("Builder.zig");
