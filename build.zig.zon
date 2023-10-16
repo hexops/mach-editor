@@ -3,8 +3,8 @@
     .version = "0.3.0",
     .dependencies = .{
         .mach = .{
-            .url = "https://pkg.machengine.org/mach/c77619045f82066cb39b4fe254bd4d32b25ff40d.tar.gz",
-            .hash = "122012ba16bc674d98390e376299d6fb260bb8a42d55cc100f18370e69b1cc390adb",
+            .url = "https://pkg.machengine.org/mach/c03673ff053af3c2a7741676a38e68e3a0e1ff97.tar.gz",
+            .hash = "12201dfa2b3e49389c21c94680b4b5400dd2c694195242120c51cc283098833d0bd9",
         },
     },
 }
