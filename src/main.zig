@@ -33,7 +33,7 @@ pub fn main() !void {
     defer std.process.argsFree(allocator, args);
 
     if (args.len == 1) {
-        gpu.Impl.init();
+        try gpu.Impl.init(allocator, .{});
         _ = gpu.Export(GPUInterface);
 
         var app: App = undefined;

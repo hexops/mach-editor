@@ -1,10 +1,19 @@
 .{
     .name = "mach-editor",
     .version = "0.3.0",
+    .paths = .{
+        "src",
+        "build.zig",
+        "build.zig.zon",
+        "LICENSE",
+        "LICENSE-APACHE",
+        "LICENSE-MIT",
+        "README.md",
+    },
     .dependencies = .{
         .mach = .{
-            .url = "https://pkg.machengine.org/mach/c77619045f82066cb39b4fe254bd4d32b25ff40d.tar.gz",
-            .hash = "122012ba16bc674d98390e376299d6fb260bb8a42d55cc100f18370e69b1cc390adb",
+            .url = "https://pkg.machengine.org/mach/098d5ee73fa4e0b499e300abe17fc8056a7d1d84.tar.gz",
+            .hash = "1220460f5e1d1f18cb7734e48e7f1d1bff2bd154b9c7d86ff667e80b05be8951143c",
         },
     },
 }
