@@ -2,7 +2,6 @@ const std = @import("std");
 const mime_map = @import("Builder/mime.zig").mime_map;
 const Target = @import("target.zig").Target;
 const OptimizeMode = std.builtin.OptimizeMode;
-const allocator = @import("main.zig").allocator;
 
 const Builder = @This();
 
@@ -12,6 +11,7 @@ const @"www/ansi_to_html.js" = @embedFile("Builder/www/ansi_to_html.js");
 const @"www/wasmserve.js" = @embedFile("Builder/www/wasmserve.js");
 const @"www/favicon.ico" = @embedFile("Builder/www/favicon.ico");
 
+gpa: std.mem.Allocator,
 steps: []const []const u8 = &.{},
 serve: bool = false,
 target: ?Target = null,
@@ -33,10 +33,10 @@ const Status = union(enum) {
     compile_error: []const u8,
 };
 
-fn deinit(self: *Builder) void {
-    allocator.free(self.steps);
-    allocator.free(self.zig_build_args);
-    if (self.watch_paths) |wp| allocator.free(wp);
+pub fn deinit(self: *Builder) void {
+    self.gpa.free(self.steps);
+    self.gpa.free(self.zig_build_args);
+    if (self.watch_paths) |wp| self.gpa.free(wp);
 }
 
 pub fn run(self: *Builder) !void {
@@ -62,7 +62,7 @@ pub fn run(self: *Builder) !void {
         while (try out_dir_iter.next()) |entry| {
             if (entry.kind != .file) continue;
             if (std.mem.eql(u8, std.fs.path.extension(entry.name), ".wasm")) {
-                wasm_file_name = try allocator.dupe(u8, entry.name);
+                wasm_file_name = try self.gpa.dupe(u8, entry.name);
             }
         }
         if (wasm_file_name == null) {
@@ -71,7 +71,7 @@ pub fn run(self: *Builder) !void {
         }
 
         self.www_index_html = try std.fmt.allocPrint(
-            allocator,
+            self.gpa,
             @"www/index.html",
             .{
                 .app_name = std.fs.path.stem(wasm_file_name.?),
@@ -90,8 +90,8 @@ pub fn run(self: *Builder) !void {
         try server.listen(std.net.Address.initIp4(.{ 127, 0, 0, 1 }, self.listen_port));
         std.log.info("started listening at http://127.0.0.1:{d}...", .{self.listen_port});
 
-        var pool = try allocator.create(std.Thread.Pool);
-        try pool.init(.{ .allocator = allocator });
+        var pool = try self.gpa.create(std.Thread.Pool);
+        try pool.init(.{ .allocator = self.gpa });
         defer pool.deinit();
 
         while (true) {
@@ -102,7 +102,7 @@ pub fn run(self: *Builder) !void {
 }
 
 fn runZigBuild(self: Builder, stderr_behavior: std.process.Child.StdIo) !std.process.Child {
-    var arena = std.heap.ArenaAllocator.init(allocator);
+    var arena = std.heap.ArenaAllocator.init(self.gpa);
     defer arena.deinit();
     const arena_allocator = arena.allocator();
 
@@ -151,7 +151,7 @@ const path_handlers = std.ComptimeStringMap(*const fn (*Builder, std.net.Stream)
     .{ "/notify", struct {
         fn h(builder: *Builder, stream: std.net.Stream) void {
             sendData(stream, .ok, .keep_alive, "text/event-stream", null);
-            builder.subscribers.append(allocator, stream) catch {
+            builder.subscribers.append(builder.gpa, stream) catch {
                 stream.close();
                 return;
             };
@@ -327,7 +327,7 @@ fn compile(self: *Builder) void {
     var child = self.runZigBuild(.Pipe) catch unreachable;
 
     const stderr = child.stderr.?.reader().readAllAlloc(
-        allocator,
+        self.gpa,
         std.math.maxInt(usize),
     ) catch @panic("OOM");
 
@@ -335,14 +335,14 @@ fn compile(self: *Builder) void {
 
     const term = child.wait() catch unreachable;
     if (term == .Exited and term.Exited == 0) {
-        allocator.free(stderr);
+        self.gpa.free(stderr);
         self.status = .built;
         std.log.info("built", .{});
     } else if (term == .Exited and term.Exited == 1) {
         std.log.warn("compile error", .{});
         self.status = .{ .compile_error = stderr };
     } else {
-        allocator.free(stderr);
+        self.gpa.free(stderr);
         self.status = .stopped;
         std.log.warn("the build process has stopped unexpectedly", .{});
     }
