@@ -11,9 +11,11 @@ pub usingnamespace @import("app");
 const std = @import("std");
 const builtin = @import("builtin");
 const core = @import("mach-core");
-const sysgpu = @import("mach-sysgpu");
+// TODO(sysgpu): re-enable
+// const sysgpu = @import("mach-sysgpu");
 const Builder = @import("Builder.zig");
-const ShaderCompiler = @import("ShaderCompiler.zig");
+// TODO(sysgpu): re-enable
+// const ShaderCompiler = @import("ShaderCompiler.zig");
 const Target = @import("target.zig").Target;
 const App = @import("app").App;
 const eql = std.mem.eql;
@@ -46,7 +48,9 @@ pub fn main() !void {
     if (std.mem.eql(u8, cmd, "build")) {
         return build(allocator, &args);
     } else if (std.mem.eql(u8, cmd, "compile")) {
-        return compile(allocator, &args);
+        fail("disabled", .{});
+        // TODO(sysgpu): re-enable
+        // return compile(allocator, &args);
     } else if (std.mem.eql(u8, cmd, "help")) {
         _ = try std.io.getStdOut().write(help_output);
     } else {
@@ -108,53 +112,54 @@ fn build(gpa: std.mem.Allocator, args: *std.process.ArgIterator) !void {
     try builder.run();
 }
 
-fn compile(gpa: std.mem.Allocator, args: *std.process.ArgIterator) !void {
-    var input_file: ?[]const u8 = null;
-    var output_file: ?[]const u8 = null;
-    var env: ShaderCompiler.Environment = .opengl;
-    var version: ?u16 = null;
+// TODO(sysgpu): re-enable
+// fn compile(gpa: std.mem.Allocator, args: *std.process.ArgIterator) !void {
+//     var input_file: ?[]const u8 = null;
+//     var output_file: ?[]const u8 = null;
+//     var env: ShaderCompiler.Environment = .opengl;
+//     var version: ?u16 = null;
 
-    while (args.next()) |arg| {
-        if (eql(u8, arg, "help")) {
-            _ = try std.io.getStdOut().write(compile_help_output);
-            return;
-        } else if (eql(u8, arg, "--output") or eql(u8, arg, "-o")) {
-            output_file = args.next() orelse fail("expected output path after {s}", .{arg});
-        } else if (eql(u8, arg, "--target")) {
-            const target_str = args.next() orelse fail("expected target environment and version after {s}", .{arg});
-            var split_iter = std.mem.split(u8, target_str, "-");
-            const env_str = split_iter.first();
-            env = std.meta.stringToEnum(ShaderCompiler.Environment, env_str) orelse fail("invalid environment '{s}'", .{env_str});
-            if (split_iter.next()) |version_str| {
-                version = std.fmt.parseInt(u16, version_str, 10) catch fail("invalid target version '{s}'", .{version_str});
-            }
-        } else if (input_file == null) {
-            input_file = arg;
-        } else {
-            fail("invalid argument '{s}'", .{arg});
-        }
-    }
+//     while (args.next()) |arg| {
+//         if (eql(u8, arg, "help")) {
+//             _ = try std.io.getStdOut().write(compile_help_output);
+//             return;
+//         } else if (eql(u8, arg, "--output") or eql(u8, arg, "-o")) {
+//             output_file = args.next() orelse fail("expected output path after {s}", .{arg});
+//         } else if (eql(u8, arg, "--target")) {
+//             const target_str = args.next() orelse fail("expected target environment and version after {s}", .{arg});
+//             var split_iter = std.mem.split(u8, target_str, "-");
+//             const env_str = split_iter.first();
+//             env = std.meta.stringToEnum(ShaderCompiler.Environment, env_str) orelse fail("invalid environment '{s}'", .{env_str});
+//             if (split_iter.next()) |version_str| {
+//                 version = std.fmt.parseInt(u16, version_str, 10) catch fail("invalid target version '{s}'", .{version_str});
+//             }
+//         } else if (input_file == null) {
+//             input_file = arg;
+//         } else {
+//             fail("invalid argument '{s}'", .{arg});
+//         }
+//     }
 
-    if (input_file == null) {
-        fail("no input file has been specified", .{});
-    }
+//     if (input_file == null) {
+//         fail("no input file has been specified", .{});
+//     }
 
-    if (output_file) |o| {
-        if (endsWith(u8, o, ".spv")) {
-            env = .spirv;
-            version = 140;
-        } else if (endsWith(u8, o, ".glsl")) {
-            env = .opengl;
-            version = 450;
-        } else if (endsWith(u8, o, ".hlsl")) {
-            env = .hlsl;
-        } else if (endsWith(u8, o, ".msl")) {
-            env = .msl;
-        }
-    }
+//     if (output_file) |o| {
+//         if (endsWith(u8, o, ".spv")) {
+//             env = .spirv;
+//             version = 140;
+//         } else if (endsWith(u8, o, ".glsl")) {
+//             env = .opengl;
+//             version = 450;
+//         } else if (endsWith(u8, o, ".hlsl")) {
+//             env = .hlsl;
+//         } else if (endsWith(u8, o, ".msl")) {
+//             env = .msl;
+//         }
+//     }
 
-    ShaderCompiler.compile(gpa, input_file.?, output_file, env, version);
-}
+//     ShaderCompiler.compile(gpa, input_file.?, output_file, env, version);
+// }
 
 pub fn fail(comptime fmt: []const u8, args: anytype) noreturn {
     const stderr = std.io.getStdErr();

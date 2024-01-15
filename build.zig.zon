@@ -12,20 +12,21 @@
     },
     .dependencies = .{
         .mach = .{
-            .url = "https://pkg.machengine.org/mach/ec53b24309e63b5d3033817ebc0f21c32b33e576.tar.gz",
-            .hash = "1220ec5f23c6f3e0d38a5b9526ee55038b0dd44f734f2d9c380de2700529c1ac0354",
+            .url = "https://pkg.machengine.org/mach/8da66bef3fdbea3ecec8a6db1c13e6a31c8d4da2.tar.gz",
+            .hash = "1220082e849c856f05d13ce935ff2957be9ab27a8316226cd6c9585a0a1dfbbe515f",
         },
-        .mach_sysgpu = .{
-            .url = "https://pkg.machengine.org/mach-sysgpu/e5682c4d05ab8f50defdf821be431eb7ead75111.tar.gz",
-            .hash = "1220e011b9bb9e642b0a0434f7a30617cc12e2c8ea05af50d889f079ec531dc04512",
-        },
+        // TODO(sysgpu): re-enable
+        // .mach_sysgpu = .{
+        //     .url = "https://pkg.machengine.org/mach-sysgpu/4f60121ce6803bde7695aefb8cb8647d05c2a714.tar.gz",
+        //     .hash = "1220468021e8ad528defe092cc36ad4342555d2106482781665e8672c9e3345b5d6b",
+        // },
         .spirv_cross = .{
-            .url = "https://pkg.machengine.org/SPIRV-Cross/a2b361bd832848dbca869067fb827a79ee468e3f.tar.gz",
-            .hash = "12201c9d01be33e76a292b3fc706b71e8b6ad4e3f79e743adf9b9b3d95cae518b782",
+            .url = "https://pkg.machengine.org/SPIRV-Cross/9866e847a3b01633db38458b1b7429750802a250.tar.gz",
+            .hash = "1220922b722e291ae7f432b3a144863d76bd01e7d1f0f05ca883f3e09e48306103aa",
         },
         .spirv_tools = .{
-            .url = "https://pkg.machengine.org/SPIRV-Tools/19df669a85e7d2ca75792ad7d2210efdbcfb4f6c.tar.gz",
-            .hash = "12200f4f837d272dc9fea6db658d75aef3bbe11753817f203a44832e595ce5a049ba",
+            .url = "https://pkg.machengine.org/SPIRV-Tools/23092f85a721e5297f0f704d95bbd263d5a7a771.tar.gz",
+            .hash = "1220ec815dfda171b5bf65f6078932d79e034508e9ecef51be660f6a89cc7c70aef9",
         },
     },
 }

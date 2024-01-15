@@ -51,7 +51,7 @@ pub fn run(self: *Builder) !void {
     }
 
     if (self.serve) {
-        var out_dir = std.fs.cwd().openIterableDir(out_dir_path, .{}) catch |err| {
+        var out_dir = std.fs.cwd().openDir(out_dir_path, .{ .iterate = true }) catch |err| {
             std.log.err("cannot open '{s}': {s}", .{ out_dir_path, @errorName(err) });
             std.os.exit(1);
         };

@@ -4,6 +4,8 @@ const core = mach.core;
 const gpu = mach.gpu;
 
 pub const name = .editor;
+pub const Mod = mach.Mod(@This());
+
 pub const modules = .{ mach.Engine, @This() };
 pub const App = mach.App;
 
@@ -25,7 +27,7 @@ fragment_shader_file: std.fs.File,
 fragment_shader_code: [:0]const u8,
 last_mtime: i128,
 
-pub fn init(editor: *mach.Mod(.editor)) !void {
+pub fn init(editor: *Mod) !void {
     core.setTitle("Mach editor");
 
     var fragment_file: std.fs.File = undefined;
@@ -44,7 +46,7 @@ pub fn init(editor: *mach.Mod(.editor)) !void {
         std.debug.print("Something went wrong when attempting to open file: {}\n", .{e});
         return;
     }
-    var code = try fragment_file.readToEndAllocOptions(allocator, std.math.maxInt(u16), null, 1, 0);
+    const code = try fragment_file.readToEndAllocOptions(allocator, std.math.maxInt(u16), null, 1, 0);
 
     const queue = core.device.getQueue();
 
@@ -81,7 +83,7 @@ pub fn init(editor: *mach.Mod(.editor)) !void {
     bgl.release();
 }
 
-pub fn deinit(editor: *mach.Mod(.editor)) !void {
+pub fn deinit(editor: *Mod) !void {
     defer _ = gpa.deinit();
 
     editor.state.fragment_shader_file.close();
@@ -92,8 +94,8 @@ pub fn deinit(editor: *mach.Mod(.editor)) !void {
 }
 
 pub fn tick(
-    engine: *mach.Mod(.engine),
-    editor: *mach.Mod(.editor),
+    editor: *Mod,
+    engine: *mach.Engine.Mod,
 ) !void {
     var iter = core.pollEvents();
     while (iter.next()) |event| {
