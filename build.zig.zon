@@ -12,8 +12,8 @@
     },
     .dependencies = .{
         .mach = .{
-            .url = "https://pkg.machengine.org/mach/8da66bef3fdbea3ecec8a6db1c13e6a31c8d4da2.tar.gz",
-            .hash = "1220082e849c856f05d13ce935ff2957be9ab27a8316226cd6c9585a0a1dfbbe515f",
+            .url = "https://pkg.machengine.org/mach/d4cd79440ea16bf59156cd57707e5833acb8e1b5.tar.gz",
+            .hash = "12204662d0dc8a74270b1b219ad1b41e63568f7ae532a243a5fc38b1a95f58f756ae",
         },
         // TODO(sysgpu): re-enable
         // .mach_sysgpu = .{
