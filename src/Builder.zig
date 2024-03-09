@@ -85,9 +85,9 @@ pub fn run(self: *Builder) !void {
             null;
         defer if (watch_thread) |wt| wt.detach();
 
-        var server = std.net.StreamServer.init(.{ .reuse_address = true });
+        const address = std.net.Address.initIp4(.{ 127, 0, 0, 1 }, self.listen_port);
+        var server = try address.listen(.{ .reuse_address = true, .reuse_port = true });
         defer server.deinit();
-        try server.listen(std.net.Address.initIp4(.{ 127, 0, 0, 1 }, self.listen_port));
         std.log.info("started listening at http://127.0.0.1:{d}...", .{self.listen_port});
 
         var pool = try self.gpa.create(std.Thread.Pool);
@@ -226,7 +226,7 @@ fn sendData(
     }
 }
 
-fn handleConn(self: *Builder, conn: std.net.StreamServer.Connection) void {
+fn handleConn(self: *Builder, conn: std.net.Server.Connection) void {
     errdefer {
         sendError(conn.stream, .internal_server_error);
         conn.stream.close();
